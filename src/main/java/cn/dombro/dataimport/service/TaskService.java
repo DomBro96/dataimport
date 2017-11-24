@@ -24,8 +24,7 @@ public class TaskService {
         DeleteSchedulerListener schedulerListener = new DeleteSchedulerListener();
         deleteTask.setDownloadPath(downloadPath);
         setDeleteTime();
- //       String scheduleId = deleteScheduler.schedule(minute+" "+hour+" "+dayOfMonth+" "+month+" *",deleteTask);
-        String scheduleId = deleteScheduler.schedule( "50 18 2 11 *",deleteTask);
+        String scheduleId = deleteScheduler.schedule(minute+" "+hour+" "+dayOfMonth+" "+month+" *",deleteTask);
         schedulerListener.setSchedulerId(scheduleId);
         //添加监听器
         deleteScheduler.addSchedulerListener(schedulerListener);
