@@ -71,7 +71,6 @@ public class ExportDbService implements IExportDbService{
                 msg = MsgEnum.EXPORT_MYSQL_FAIL.getMsg();
                 return false;
             }finally {
-                System.out.println(1111);
                 //删除sql、csv
                 System.out.println(deleteFile(uploadFilePath));
             }
