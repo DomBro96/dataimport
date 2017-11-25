@@ -313,6 +313,7 @@ public void close() {
 
 首先感谢上帝，磨磨蹭蹭，写了一个月，需求分析，概要设计，详细设计，编码阶段...每个阶段都是锻炼自己和站在巨人肩膀上编程的过程。
 特别感谢：
+
 参与需求讨论、给予前端支持和意见指导的[youyinnn](https://github.com/youyinnn)。
 
 参与需求讨论与功能设计[caoler](https://github.com/caoler)。
