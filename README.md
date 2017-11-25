@@ -143,7 +143,7 @@ source sql_file_path
 但这条 sql 语句竟然不能被执行(反正我是不能执行)，只好利用使用 cmd 语句
 
 ```
-mysql -u user -p password -D school < sql_file_path
+mysql -u user -p password -D database < sql_file_path
 ```
 
 然后就是导出 csv 文件了，同样是一个 sql 语句
