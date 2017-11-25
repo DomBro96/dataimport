@@ -1,5 +1,6 @@
 package cn.dombro.dataimport.controller;
 
+import cn.dombro.dataimport.interceptor.AccressControlInterceptor;
 import cn.dombro.dataimport.interceptor.AuthorizInterceptor;
 import cn.dombro.dataimport.service.TaskService;
 import cn.dombro.dataimport.util.ClaimUtil;
@@ -9,6 +10,7 @@ import com.jfinal.core.Controller;
 
 import java.io.File;
 
+@Before(AccressControlInterceptor.class)
 public class PublicFunctionController extends Controller {
 
     TaskService service = null;

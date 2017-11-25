@@ -3,9 +3,11 @@ package cn.dombro.dataimport.controller;
 
 import cn.dombro.dataimport.factory.IServiceFactory;
 import cn.dombro.dataimport.factory.ServiceFactory;
+import cn.dombro.dataimport.interceptor.AccressControlInterceptor;
 import cn.dombro.dataimport.service.*;
 import cn.dombro.dataimport.util.FilePathEnum;
 import cn.dombro.dataimport.util.WebTokenUtil;
+import com.jfinal.aop.Before;
 import com.jfinal.core.ActionKey;
 import com.jfinal.core.Controller;
 import com.jfinal.upload.UploadFile;
@@ -14,6 +16,7 @@ import java.io.File;
 import java.util.*;
 
 
+@Before(AccressControlInterceptor.class)
 public class SystemFunctionController extends Controller {
 
     private Map<String,Object> jsonMap = null;
