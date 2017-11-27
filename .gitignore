@@ -8,5 +8,6 @@
 workspace.xml
 config.properties
 mongodb.properties
+target
 out
 gen
