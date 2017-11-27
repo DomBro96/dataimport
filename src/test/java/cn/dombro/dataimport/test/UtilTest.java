@@ -37,7 +37,7 @@ public class UtilTest {
 
     @Test
     public void tokenTest(){
-        //System.out.println(WebTokenUtil.verifyJavaWebToken("eyJhbGciOiJIUzI1NiJ9.eyJleHBvcnRGaWxlUGF0aCI6IkU6XFxJREVBXFxkYXRhaW1wb3J0XFx0YXJnZXRcXGRhdGFpbXBvcnQtMS4wLVNOQVBTSE9UXFxkb3dubG9hZFxcc3R1ZGVudHNGQ25PbTdCNS54bHMifQ.rqfuzx3Zg1Dh_uGPAkklqqzZXb3CAUGTgrCinEgcme0").get("exportFilePath"));
+        System.out.println(WebTokenUtil.verifyJavaWebToken("eyJhbGciOiJIUzI1NiJ9.eyJleHBvcnRGaWxlUGF0aCI6IkU6XFxJREVBXFxkYXRhaW1wb3J0XFx0YXJnZXRcXGRhdGFpbXBvcnQtMS4wLVNOQVBTSE9UXFxkb3dubG9hZFxcc3R1ZGVudHNSc0ExMFhUaS54bHMifQ.r5MjwnKV-JgcXyC-145DJOrohyAnZuOxwTL6spYm2hI").get("exportFilePath"));
     }
 
     @Test

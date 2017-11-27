@@ -12,9 +12,10 @@ import cn.dombro.dataimport.util.GeneratorUtil;
 import cn.dombro.dataimport.util.MsgEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.List;
-import java.io.File;
+
 public class ExportDbService implements IExportDbService{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ExportDbService.class);
@@ -48,19 +49,25 @@ public class ExportDbService implements IExportDbService{
         String prefix = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1,uploadFilePath.lastIndexOf("."));
         //判断表是否存在
         if (!mysqlDAO.isTableExist(tableName) && GeneratorUtil.isEngNum(tableName) &&GeneratorUtil.isEngNum(prefix)){
+
             //设置 .csv 文件放置路径
             setCsvFilePath(uploadFilePath,exportFormat);
             try {
-                //导入sql文件
-                mysqlDAO.sqlImport(uploadFilePath);
-                //导出 .csv
-                mysqlDAO.csvExport(tableName,csvFilePath);
-                //转换 excel
-                csv2excel(exportFormat);
-                //删除表
-                mysqlDAO.dropTable(tableName);
-                msg = MsgEnum.EXPORT_MYSQL_SUCCESS.getMsg();
-                return true;
+                if (GeneratorUtil.readSqlFile(uploadFilePath,tableName)) {
+                    //导入sql文件
+                    mysqlDAO.sqlImport(uploadFilePath);
+                    //导出 .csv
+                    mysqlDAO.csvExport(tableName, csvFilePath);
+                    //转换 excel
+                    csv2excel(exportFormat);
+                    //删除表
+                    mysqlDAO.dropTable(tableName);
+                    msg = MsgEnum.EXPORT_MYSQL_SUCCESS.getMsg();
+                    return true;
+                }else {
+                    msg = MsgEnum.EXPORT_MYSQL_WITHWRONGTABLE.getMsg();
+                    return false;
+                }
             } catch (Exception e) {
                 System.out.println(csvFilePath);
                 //如果sql文件导入后创建该表，则删除表

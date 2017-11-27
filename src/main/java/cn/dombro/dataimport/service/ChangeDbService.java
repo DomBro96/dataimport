@@ -11,8 +11,8 @@ import cn.dombro.dataimport.util.GeneratorUtil;
 import cn.dombro.dataimport.util.MsgEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.List;
 
 
@@ -53,29 +53,34 @@ public class ChangeDbService implements IChangeDbService{
         mysqlDAO = daoFactory.getMySqlDAO();
         mongodbDAO = daoFactory.getMongodbDAO();
         String prefix = dbFilePath.substring(dbFilePath.lastIndexOf(File.separator)+1,dbFilePath.lastIndexOf("."));
-
         //判断表是否存在
         if (!mysqlDAO.isTableExist(tableName) && !mongodbDAO.isCollectionExist(tableName) && GeneratorUtil.isEngNum(tableName) &&GeneratorUtil.isEngNum(prefix)){
-            //导入mysql文件
+
             try {
-                mysqlDAO.sqlImport(dbFilePath);
-                fields = mysqlDAO.getFields(tableName);
-                //设置文件路径
-                setFilePath(dbFilePath);
-                exportFilePath = jsonFilePath;
-                //导出 .csv
-                mysqlDAO.csvExport(tableName,csvFilePath);
-                //MongoDb建集合
-                mongodbDAO.createCollection(tableName);
-                //csv导入MongoDb
-                mongodbDAO.csvImport(fields,tableName,csvFilePath);
-                //MongDb导出 .json
-                mongodbDAO.jsonExport(tableName,jsonFilePath);
-                //删除表 集合
-                mysqlDAO.dropTable(tableName);
-                mongodbDAO.dropCollection(tableName);
-                msg = MsgEnum.MYSQL_TO_MONGODB_SUCCESS.getMsg();
-                return true;
+                if (GeneratorUtil.readSqlFile(dbFilePath,tableName)) {
+                    //导入mysql文件
+                    mysqlDAO.sqlImport(dbFilePath);
+                    fields = mysqlDAO.getFields(tableName);
+                    //设置文件路径
+                    setFilePath(dbFilePath);
+                    exportFilePath = jsonFilePath;
+                    //导出 .csv
+                    mysqlDAO.csvExport(tableName, csvFilePath);
+                    //MongoDb建集合
+                    mongodbDAO.createCollection(tableName);
+                    //csv导入MongoDb
+                    mongodbDAO.csvImport(fields, tableName, csvFilePath);
+                    //MongoDb导出 .json
+                    mongodbDAO.jsonExport(tableName, jsonFilePath);
+                    //删除表 集合
+                    mysqlDAO.dropTable(tableName);
+                    mongodbDAO.dropCollection(tableName);
+                    msg = MsgEnum.MYSQL_TO_MONGODB_SUCCESS.getMsg();
+                    return true;
+                }else {
+                    msg = MsgEnum.EXPORT_MYSQL_WITHWRONGTABLE.getMsg();
+                    return false;
+                }
             } catch (IOException e) {
                 LOGGER.error("MySql转换MongoDB失败",e);
                 msg = MsgEnum.MYSQL_TO_MONGODB_FAIL.getMsg();
@@ -158,11 +163,12 @@ public class ChangeDbService implements IChangeDbService{
     }
 
 
-    private boolean deleteFile(String uploadFilePath) {
+    private void deleteFile(String uploadFilePath) {
         //删除上传文件
         //删除 csv 文件
-        if (FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath) && FilePathEnum.DELETE_FILE.deleteFile(csvFilePath))
-            return true;
-        return false;
+        if (new File(uploadFilePath).exists())
+            FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath);
+        if (new File(csvFilePath).exists())
+            FilePathEnum.DELETE_FILE.deleteFile(csvFilePath);
     }
 }

@@ -65,24 +65,35 @@ public class ExcelUtil {
     }
 
     public static void xlsx2Csv(String inputFilePath,String outputFilePath) throws Exception {
-        XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,outputFilePath);
+        XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,outputFilePath,0);
         xlsx2CSV.process();
     }
 
     public static void xls2Csv(String inputFilePath,String outputFilePath) throws Exception {
-        XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,outputFilePath);
+        XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,outputFilePath,0);
         xls2CSV.process();
     }
 
+    //xls 转为 GBK 编码的 csv
+    public static void xls2CsvByGbk(String inputFilePath,String outputFilePath) throws Exception {
+        XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,outputFilePath,1);
+        xls2CSV.process();
+    }
+
+    //xlsx 转为 GBK 编码的 csv
+    public static void xlsx2CsvByGbk(String inputFilePath,String outputFilePath) throws Exception {
+        XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,outputFilePath,1);
+        xlsx2CSV.process();
+    }
 
     public static void xls2Xlsx(String inputFilePath,String tempFilePath,String outputFilePath) throws Exception {
-        XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,tempFilePath);
+        XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,tempFilePath,0);
         xls2CSV.process();
         CsvUtil.csv2xlsx(tempFilePath,outputFilePath);
     }
 
     public static void xlsx2Xls(String inputFilePath,String tempFilePath,String outputFilePath) throws Exception {
-        XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,tempFilePath);
+        XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,tempFilePath,0);
         xlsx2CSV.process();
         CsvUtil.csv2xls(tempFilePath,outputFilePath);
     }

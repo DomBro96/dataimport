@@ -46,8 +46,12 @@ public class XLS2CSV implements HSSFListener{
     private boolean outputNextStringRecord;
 
     //private final String OUTPUT_CHARSET = "GBK";
-    private final String OUTPUT_CHARSET = "utf-8";
+    private String OUTPUT_CHARSET ;
+
+
+
     /**
+
      * Creates a new XLS -> CSV converter
      *
      * @param fs
@@ -63,8 +67,16 @@ public class XLS2CSV implements HSSFListener{
         this.minColumns = minColumns;
     }
 
-    public XLS2CSV(String inputFilePath, String outputFilePath) throws Exception {
+    public XLS2CSV(String inputFilePath, String outputFilePath, int charSet) throws Exception {
         fs = new POIFSFileSystem(new FileInputStream(inputFilePath));
+        switch (charSet){
+            case 0 :
+                OUTPUT_CHARSET = "utf-8";
+                break;
+            case 1 :
+                OUTPUT_CHARSET = "GBK";
+                break;
+        }
         output = new PrintStream(outputFilePath, OUTPUT_CHARSET);
         minColumns = -1;
     }

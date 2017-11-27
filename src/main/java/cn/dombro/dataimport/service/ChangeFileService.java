@@ -132,7 +132,7 @@ public class ChangeFileService implements IChangeFileService {
         if (file.exists() && suffix.equals(".xls")){
             setExportFilePath(uploadFilePath,".csv");
             try {
-                ExcelUtil.xls2Csv(uploadFilePath,exportFilePath);
+                ExcelUtil.xls2CsvByGbk(uploadFilePath,exportFilePath);
                 msg = MsgEnum.CHANGE_FILE_SUCCESS.getMsg();
                 return true;
             } catch (Exception e) {
@@ -155,7 +155,7 @@ public class ChangeFileService implements IChangeFileService {
         if (file.exists() && suffix.equals(".xlsx")){
             setExportFilePath(uploadFilePath,".csv");
             try {
-                ExcelUtil.xlsx2Csv(uploadFilePath,exportFilePath);
+                ExcelUtil.xlsx2CsvByGbk(uploadFilePath,exportFilePath);
                 msg = MsgEnum.CHANGE_FILE_SUCCESS.getMsg();
                 return true;
             } catch (Exception e) {

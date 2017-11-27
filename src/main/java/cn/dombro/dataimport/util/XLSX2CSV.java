@@ -296,7 +296,9 @@ public class XLSX2CSV {
     private int minColumns;
     private PrintStream output;
     //private final String OUTPUT_CHARSET = "GBK";
-    private final String OUTPUT_CHARSET = "utf-8";
+    private String OUTPUT_CHARSET ;
+
+
 
     /**
      * Creates a new XLSX -> CSV converter
@@ -315,8 +317,16 @@ public class XLSX2CSV {
     }
 
     //TODO catch exceptions
-    public XLSX2CSV(String inputFilePath, String outputFilePath) throws Exception {
+    public XLSX2CSV(String inputFilePath, String outputFilePath, int charSet) throws Exception {
         xlsxPackage = OPCPackage.open(inputFilePath,PackageAccess.READ);
+        switch (charSet){
+            case 0:
+                OUTPUT_CHARSET = "utf-8";
+                break;
+            case 1:
+                OUTPUT_CHARSET = "GBK";
+                break;
+        }
         output = new PrintStream(outputFilePath, OUTPUT_CHARSET);
         minColumns = -1;
     }

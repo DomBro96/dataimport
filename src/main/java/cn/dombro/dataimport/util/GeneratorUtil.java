@@ -1,5 +1,9 @@
 package cn.dombro.dataimport.util;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,5 +70,31 @@ public class GeneratorUtil {
         return false;
     }
 
+
+    public static boolean readSqlFile(String uploadFilePath, String tableName) throws IOException {
+        int signByTable = 0;
+        int signByOther = 0;
+        try(InputStreamReader reader = new InputStreamReader(new FileInputStream(uploadFilePath),"UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(reader)){
+            String sqlLine = null;
+            while ((sqlLine = bufferedReader.readLine()) != null ){
+                //判断是否为非表结构,若为数据库结构直接返回 false
+                if (sqlLine.startsWith("CREATE DATABASE")){
+                    return false;
+                }if (sqlLine.contains("CREATE TABLE `"+tableName+"` (")){
+                    signByTable++;
+                    //若文件中含有多个表标记加一
+                }else if (sqlLine.startsWith("CREATE TABLE ") && !sqlLine.contains("CREATE TABLE `"+tableName+"` (")){
+                    signByOther++;
+                }
+            }
+
+            if (signByOther == 0 && signByTable == 1)
+                return true;
+            else
+                return false;
+
+        }
+    }
 
 }
