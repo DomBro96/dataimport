@@ -136,8 +136,6 @@ public class MysqlDAOImp implements MysqlDAO{
     }
 
 
-
-
     //导入源文件
     public void sqlImport(String sqlFilePath) throws IOException {
         String sourceCmd = "mysql -u "+user+" -p"+password+" -D "+database+" < "+sqlFilePath;

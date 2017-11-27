@@ -166,11 +166,11 @@
             <!--<version>8.1.8.v20121106</version>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>cn.dombro</groupId>
-            <artifactId>jreport</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>cn.dombro</groupId>-->
+            <!--<artifactId>jreport</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
 
 

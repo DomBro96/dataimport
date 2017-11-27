@@ -9,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jfree.report.util.CSVTokenizer;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -21,101 +20,69 @@ import java.util.List;
 public class CsvUtil {
 
 
-        public final static void csv2xls(String inputFilePath, String outputFilePath) throws IOException
-        {
-            HSSFWorkbook wb = new HSSFWorkbook();
-            HSSFSheet sheet = wb.createSheet("Sheet1");
-            BufferedReader r = null;
-            try
-            {
-                r = new BufferedReader(new FileReader(inputFilePath));
+    public final static void csv2xls(String inputFilePath, String outputFilePath) throws IOException {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet("Sheet1");
+        List<String[]> csvList = new ArrayList();
+        try (InputStream inputStream = new FileInputStream(inputFilePath);
+             FileOutputStream outputStream = new FileOutputStream(outputFilePath)) {
+            //使用 utf-8 读取 csv
+            CsvReader csvReader = new CsvReader(inputStream, Charset.forName("UTF-8"));
+            while (csvReader.readRecord()) {
+                //获取每行的值
+                csvList.add(csvReader.getValues());
+            }
 
-                int i = 0;
-
-                while (true)
-                {
-                    String ln = r.readLine();
-
-                    if (ln == null)
-                        break;
-
-                    HSSFRow row = sheet.createRow((short) i++);
-                    int j = 0;
-
-                    for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens();)
-                    {
-                        String val = it.nextToken();
-
-                        HSSFCell cell = row.createCell((short) j++);
-                        cell.setCellValue(val);
-                    }
+            for (int i = 0; i < csvList.size(); i++) {
+                //创建行
+                HSSFRow row = sheet.createRow(i);
+                String[] values = csvList.get(i);
+                for (int j = 0; j < values.length; j++) {
+                    //创建单元格
+                    HSSFCell cell = row.createCell(j);
+                    cell.setCellValue(values[j]);
                 }
             }
-            finally
-            {
-                if (r != null)
-                    r.close();
-            }
-
-            FileOutputStream fileOut = null;
-            try
-            {
-                fileOut = new FileOutputStream(outputFilePath);
-                wb.write(fileOut);
-            }
-            finally
-                    {
-                    fileOut.close();
-                    }
+            //写到文件中
+            wb.write(outputStream);
         }
-
+    }
 
 
     public final static void csv2xlsx(String inputFilePath, String outputFilePath) throws IOException {
         XSSFWorkbook xb = new XSSFWorkbook();
         XSSFSheet sheet = xb.createSheet("Sheet1");
-
-        BufferedReader r = null;
-
-        try {
-            r = new BufferedReader(new FileReader(inputFilePath));
-
-            int i = 0;
-
-            while (true) {
-                String ln = r.readLine();
-
-                if (ln == null)
-                    break;
-
-                XSSFRow row = sheet.createRow((short) i++);
-                int j = 0;
-
-                for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
-                    String val = it.nextToken();
-
-                    XSSFCell cell = row.createCell((short) j++);
-                    cell.setCellValue(val);
-                }
+        List<String[]> csvList = new ArrayList();
+        try (InputStream inputStream = new FileInputStream(inputFilePath);
+             FileOutputStream outputStream = new FileOutputStream(outputFilePath)) {
+            //使用 utf-8 读取 csv
+            CsvReader csvReader = new CsvReader(inputStream, Charset.forName("UTF-8"));
+            while (csvReader.readRecord()) {
+                //获取每行的值
+                csvList.add(csvReader.getValues());
             }
-        } finally {
-            if (r != null)
-                r.close();
-        }
 
-        FileOutputStream fileOut = null;
 
-        try {
-            fileOut = new FileOutputStream(outputFilePath);
-            xb.write(fileOut);
-        } finally {
-            fileOut.close();
+        for (int i = 0; i < csvList.size(); i++) {
+            //创建行
+            XSSFRow row = sheet.createRow(i);
+            String[] values = csvList.get(i);
+            for (int j = 0; j < values.length; j++) {
+                //创建单元格
+                XSSFCell cell = row.createCell(j);
+                cell.setCellValue(values[j]);
+            }
         }
+        //写到文件中
+        xb.write(outputStream);
+     }
     }
 
+
+
     public static List<String> getHeader(String filePath) throws IOException {
-               File csvFile = new File(filePath);
-        List<String[]> csvList = new ArrayList<String[]>();
+        File csvFile = new File(filePath);
+        List<String[]> csvList = new ArrayList();
         InputStream inputStream = new FileInputStream(csvFile);
         CsvReader csvReader = new CsvReader(inputStream,Charset.forName("UTF-8"));
 
