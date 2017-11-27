@@ -24,7 +24,7 @@ public class DaoTest {
         System.out.println(dp.start());
         System.out.println(arp.start());
         MysqlDAOImp daoImp = new MysqlDAOImp();
-        daoImp.sqlImportNoCommand("D:\\文档\\数据快速导入\\students.sql");
+//        daoImp.sqlImportNoCommand("D:\\文档\\数据快速导入\\students.sql");
 
     }
 
