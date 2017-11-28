@@ -72,13 +72,17 @@ class DeleteTask extends Task{
             return;
         }else {
             File[] childrenFiles = dir.listFiles();
-            for (int i = 0; i < childrenFiles.length; i++){
-                 if (childrenFiles[i].isFile()){
-                     FilePathEnum.DELETE_FILE.deleteFile(childrenFiles[i].getAbsolutePath());
-                 } else {
-                     deleteDir(childrenFiles[i]);
-                     childrenFiles[i].delete();
-                 }
+            if (childrenFiles.length == 0) {
+                for (int i = 0; i < childrenFiles.length; i++) {
+                    if (childrenFiles[i].isFile()) {
+                        FilePathEnum.DELETE_FILE.deleteFile(childrenFiles[i].getAbsolutePath());
+                    } else {
+                        deleteDir(childrenFiles[i]);
+                        childrenFiles[i].delete();
+                    }
+                }
+            }else {
+                return;
             }
 
         }

@@ -6,23 +6,27 @@
 - [1. 写在前面](#1)
 - [2. 项目简介](#2)
 - [3. 实现思路](#3)
- - [3.1 文件导入数据库](#3.1)
- - [3.2 数据库导出文件](#3.2)
- - [3.3 数据库品牌转换](#3.3)
- - [3.4 文件格式转换](#3.4)
+  - [3.1 文件导入数据库](#3.1)
+  - [3.2 数据库导出文件](#3.2)
+  - [3.3 数据库品牌转换](#3.3)
+  - [3.4 文件格式转换](#3.4)
 - [4. 设计思想](#4)
- - [4.1 使用框架](#4.1)
- - [4.2 设计模式](4.2)
+  - [4.1 使用框架](#4.1)
+  - [4.2 设计模式](4.2)
 - [5. 问题解决](#5)
- - [5.1 调用命令行cmd](#5.1)
- - [5.2 MongoDB的使用](#5.2)
- - [5.3 对 XLSX2CSV 的修改](#5.3)
- - [5.4 MySql导入MongoDB导出csv的坑](#5.4)
- - [5.5 编码问题](#5.5)
+  - [5.1 调用命令行cmd](#5.1)
+  - [5.2 MongoDB的使用](#5.2)
+  - [5.3 对 XLSX2CSV 的修改](#5.3)
+  - [5.4 MySql导入MongoDB导出csv的坑](#5.4)
+  - [5.5 编码问题](#5.5)
 - [6. 有待改善](#6)
 - [7. 感谢的话](#7)
 - [8. 注意](#8)
-
+- [9. bug 修复](#9)
+  - [9.1 Excel 中文乱码bug](#9.1)
+  - [9.2 sql文件导入无限制bug](#9.2)
+  - [9.3 调度器删除文件bug](#9.3)
+  - [9.4 csv 文件的乱码bug](#9.4)
 
 <h2 id="1">1. 写在前面</h2>
 
@@ -193,7 +197,7 @@ mongoexport --type=csv -f fields  -d database -c collection --noHeaderLine  -o c
 
 <h3 id="3.4">3.4 文件格式转换</h3>
 
-文件格式转换 需要用到 apche-POI 、javacsv 、jfreereport 在[pom.xml](https://github.com/DomBro96/dataimport/blob/master/pom.xml)可以查看一下。这里的实现思路很简单，把工具类中的方法进行一个简单的封装（封装到service层），在由上层调用就可以了。[csv 与 xls、xlsx 互相换](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/CsvUtil.java)上面已将提到了，[xls 与 xlsx的转换](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/ExcelUtil.java) 同样借助 csv 就可以了。
+文件格式转换 需要用到 apche-POI 、javacsv 在[pom.xml](https://github.com/DomBro96/dataimport/blob/master/pom.xml)可以查看一下。这里的实现思路很简单，把工具类中的方法进行一个简单的封装（封装到service层），在由上层调用就可以了。[csv 与 xls、xlsx 互相换](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/CsvUtil.java)上面已将提到了，[xls 与 xlsx的转换](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/ExcelUtil.java) 同样借助 csv 就可以了。
 
 
 
@@ -324,7 +328,7 @@ public void close() {
 
 <h2 id="8">8. 注意</h2>
 
-由于安全需要，git 版本屏蔽了 /dataimport/src/recourse/ 下的 config.properties 和 mongodb.properties 文件。想要 clone 的同学需要自己手动新建这两个文件。模板如下
+由于安全需要，git 版本屏蔽了 /dataimport/src/main/recourse/ 下的 config.properties 和 mongodb.properties 文件。想要 clone 的同学需要自己手动新建这两个文件。模板如下
 
 - config.properties
 
@@ -350,6 +354,46 @@ port=your_port
 database=data_import
 ```
 
+<h2 id="9">9. bug 修复</h2>
+
+
+有几个细节的 bug 问题在与前端进行交互测试时被暴露出来。事实证明这几个bug是致命的。
+
+<h3 id="9.1">9.1 Excel 中文乱码bug</h3>
+
+
+- 解决
+
+有两条业务流需要导出 Excel类型 文件：从数据库导出 和 数据库品牌转换。原本使用 jfreereport 这个依赖将 csv 文件转为 Excel 文件。但开始测试前除了一些状况，这个依赖突然不好用了，导出来的全都是乱码。事实证明这个依赖在 maven 中也是总被检测处错误。一气之下，我决定不用这个2008年后就没更新过的依赖。使用 javascv 读取 csv 文件每行，注意这里读取一定要用 utf-8 编码读取，因为这里的 csv 是从数据库导出，而我的数据库是 utf-8 编码。读取后使用 apche-poi 将每个逗号分隔的数据写入Excel文件中即可。 [戳这里看源码的 csv2xls 方法](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/CsvUtil.java)。转出的 Excel 也并无中文乱码。
+
+
+
+<h3 id="9.2">9.2 sql文件导入无限制bug</h3>
+
+
+- 解决
+
+
+在从数据库文件导出表数据和数据库转换这两条流中，一开始很天真的让用户上传一个sql文件，并输入sql文件的表名。这样系统导入sql文件，如果输入的表名与sql文件并不一致，不仅会导致找不到要导出数据的表，更会导致数据库无法删除那个不需要的表。一开始想用事务来滚操作，可是导入sql文件操作我是调用命令行来操作。于是被逼无奈下只好是先用流读取sql文件，判断文件中有没有 `CREAT TABLE 传来的表名`这样的语句，这个CREAT 语句一定是只有一个的且不能出现 `CREAT DATABASE` 这个语句，因为我要确定这是一个表结构的sql文件。当这一判断成立后导入sql文件。[戳这里看源码的 readSqlFile 方法](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/GeneratorUtil.java)。
+
+
+<h3 id="9.3">9.3 调度器删除文件bug</h3>
+
+- 解决
+
+这个问题很好的解释了我想的不够全面，开始并没想过用户上传文件后不继续操作的情况。于是在项目启动时，便开启一个调度，在每天24点清空上传文件夹、暂存文件夹，下载文件夹。
+
+
+<h3 id="9.4">9.4 csv 文件的乱码bug</h3>
+
+- 解决
+
+
+项目用到 csv 文件的地方特别多。这就要考虑到使用场景，我使Excel文件转换的csv文件为 GBK 编码，这样保证使 Excel 打开不会乱码。但数据库文件转为csv文件不可避免的会是 utf-8 编码。
+
+
+
+ 
 
 
 
