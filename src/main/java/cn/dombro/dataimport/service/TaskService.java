@@ -4,27 +4,20 @@ import cn.dombro.dataimport.util.FilePathEnum;
 import it.sauronsoftware.cron4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
+import java.io.File;
 
 public class TaskService {
 
     private Scheduler deleteScheduler = null;
-    private int month;
-    private int dayOfMonth;
-    private int minute;
-    private int hour;
 
 
-
-    public void startSchedule(String downloadPath){
+    public void startSchedule(){
 
         deleteScheduler = new Scheduler();
         DeleteTask deleteTask = new DeleteTask();
         DeleteSchedulerListener schedulerListener = new DeleteSchedulerListener();
-        deleteTask.setDownloadPath(downloadPath);
-        setDeleteTime();
-        String scheduleId = deleteScheduler.schedule(minute+" "+hour+" "+dayOfMonth+" "+month+" *",deleteTask);
+        //每天第24点删除文件
+        String scheduleId = deleteScheduler.schedule(0+" "+24+" * * *",deleteTask);
         schedulerListener.setSchedulerId(scheduleId);
         //添加监听器
         deleteScheduler.addSchedulerListener(schedulerListener);
@@ -33,15 +26,6 @@ public class TaskService {
     }
 
 
-    private void setDeleteTime(){
-        LocalDateTime now = LocalDateTime.now().withNano(0);
-        //十二个小时后进行文件删除
-        LocalDateTime tomorrow = now.plusHours(12);
-        month = tomorrow.getMonthValue();
-        dayOfMonth = tomorrow.getDayOfMonth();
-        minute = tomorrow.getMinute();
-        hour = tomorrow.getHour();
-    }
 
     public Scheduler getScheduler() {
         return deleteScheduler;
@@ -51,17 +35,23 @@ public class TaskService {
 class DeleteTask extends Task{
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteTask.class);
 
-    String downloadPath = null;
+
+
 
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
-         boolean isDelete = FilePathEnum.DELETE_FILE.deleteFile(downloadPath);
-         System.out.println(isDelete);
-         if (isDelete == true){
-            taskExecutionContext.setStatusMessage("delete success");
-             LOGGER.info("下载文件"+downloadPath+"已被删除");
-         }else {
-             LOGGER.info("下载文件"+downloadPath+"删除失败");
+         //boolean isDelete = FilePathEnum.DELETE_FILE.deleteFile(downloadPath);
+         File uploadDir = new File(FilePathEnum.UPLOAD_PATH.getFilePath());
+         File tempDir = new File(FilePathEnum.TEMP_PATH.getFilePath());
+         File downloadDir = new File(FilePathEnum.DOWNLOAD_PATH.getFilePath());
+         deleteDir(uploadDir);
+         deleteDir(tempDir);
+         deleteDir(downloadDir);
+         if (uploadDir.listFiles() == null && tempDir.listFiles() == null && downloadDir.listFiles() == null){
+             LOGGER.info("上传文件夹已被清空");
+             LOGGER.info("暂存文件夹已被清空");
+             LOGGER.info("下载文件夹已被清空");
+             taskExecutionContext.setStatusMessage("delete  success");
          }
 
     }
@@ -76,9 +66,28 @@ class DeleteTask extends Task{
         return true;
     }
 
-    public void setDownloadPath(String downloadPath) {
-        this.downloadPath = downloadPath;
+    private void deleteDir(File dir){
+
+        if (! dir.exists() || !dir.isDirectory()){
+            return;
+        }else {
+            File[] childrenFiles = dir.listFiles();
+            for (int i = 0; i < childrenFiles.length; i++){
+                 if (childrenFiles[i].isFile()){
+                     FilePathEnum.DELETE_FILE.deleteFile(childrenFiles[i].getAbsolutePath());
+                 } else {
+                     deleteDir(childrenFiles[i]);
+                     childrenFiles[i].delete();
+                 }
+            }
+
+        }
+
+
+
     }
+
+
 }
 
 class DeleteSchedulerListener implements SchedulerListener{

@@ -13,16 +13,12 @@ import java.io.File;
 @Before(AccressControlInterceptor.class)
 public class PublicFunctionController extends Controller {
 
-    TaskService service = null;
-
 
     @Before(AuthorizInterceptor.class)
     public void downloadfile(){
         String downloadPath = (String) ClaimUtil.getValueByPara(getRequest(),"token","exportFilePath");
         System.out.println(downloadPath);
         File downloadFile = new File(downloadPath);
-        service = new TaskService();
-        service.startSchedule(downloadPath);
         renderFile(downloadFile);
     }
 

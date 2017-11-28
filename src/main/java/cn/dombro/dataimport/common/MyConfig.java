@@ -2,6 +2,8 @@ package cn.dombro.dataimport.common;
 
 import cn.dombro.dataimport.controller.PublicFunctionController;
 import cn.dombro.dataimport.controller.SystemFunctionController;
+import cn.dombro.dataimport.service.TaskService;
+import cn.dombro.dataimport.util.CmdUtil;
 import cn.dombro.dataimport.util.FilePathEnum;
 import com.jfinal.config.*;
 import com.jfinal.kit.PropKit;
@@ -54,8 +56,15 @@ public class MyConfig extends JFinalConfig {
                         new File(FilePathEnum.TEMP_PATH.getFilePath()),
                         new File(FilePathEnum.DOWNLOAD_PATH.getFilePath())};
         for (int i = 0;i<files.length;i++){
-            if (! files[i].exists())
+            if (! files[i].exists()) {
                 files[i].mkdir();
+            }
+            if (!System.getProperty("os.name").startsWith("Windows")){
+                CmdUtil.linuxCmd("chmod 777 "+files[i]);
+            }
         }
+        //项目启动启动调度
+        TaskService taskService = new TaskService();
+        taskService.startSchedule();
     }
 }
