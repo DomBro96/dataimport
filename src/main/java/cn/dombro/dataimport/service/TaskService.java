@@ -17,7 +17,7 @@ public class TaskService {
         DeleteTask deleteTask = new DeleteTask();
         DeleteSchedulerListener schedulerListener = new DeleteSchedulerListener();
         //每天第24点删除文件
-        String scheduleId = deleteScheduler.schedule(0+" "+24+" * * *",deleteTask);
+        String scheduleId = deleteScheduler.schedule(0+" "+0+" * * *",deleteTask);
         schedulerListener.setSchedulerId(scheduleId);
         //添加监听器
         deleteScheduler.addSchedulerListener(schedulerListener);
