@@ -79,7 +79,7 @@ public class ExportDbService implements IExportDbService{
                 return false;
             }finally {
                 //删除sql、csv
-                System.out.println(deleteFile(uploadFilePath));
+                deleteFile(uploadFilePath);
             }
         }else {
             msg = MsgEnum.EXPORT_MYSQL_FAIL.getMsg();
@@ -159,13 +159,16 @@ public class ExportDbService implements IExportDbService{
 
     private boolean deleteFile(String uploadFilePath) {
         //如果导出的不是 csv 则删除 csv删除 原文件
-        if (! exportFilePath.equals(csvFilePath)){
-            if(FilePathEnum.DELETE_FILE.deleteFile(csvFilePath) && FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath))
-                return true;
-            return false;
-        }else {
-            return FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath);
-        }
 
+        if (exportFilePath !=null && !exportFilePath.equals("") && csvFilePath != null && !"".equals(csvFilePath)) {
+            if (!exportFilePath.equals(csvFilePath)) {
+                if (FilePathEnum.DELETE_FILE.deleteFile(csvFilePath) && FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath))
+                    return true;
+                return false;
+            } else {
+                return FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath);
+            }
+        }
+        return FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath);
     }
 }

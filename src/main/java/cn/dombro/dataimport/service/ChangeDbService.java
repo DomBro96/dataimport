@@ -168,7 +168,7 @@ public class ChangeDbService implements IChangeDbService{
         //删除 csv 文件
         if (new File(uploadFilePath).exists())
             FilePathEnum.DELETE_FILE.deleteFile(uploadFilePath);
-        if (new File(csvFilePath).exists())
+        if (csvFilePath != null && !csvFilePath.equals(""))
             FilePathEnum.DELETE_FILE.deleteFile(csvFilePath);
     }
 }
