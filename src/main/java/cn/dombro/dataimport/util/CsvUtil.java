@@ -20,14 +20,23 @@ import java.util.List;
 public class CsvUtil {
 
 
-    public final static void csv2xls(String inputFilePath, String outputFilePath) throws IOException {
+    public final static void csv2xls(String inputFilePath, String outputFilePath,int charSet) throws IOException {
+        String outputCharSet =" ";
+        switch (charSet){
+            case 0:
+                outputCharSet = "utf-8";
+                break;
+            case 1:
+                outputCharSet = "GBK";
+                break;
+        }
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet("Sheet1");
         List<String[]> csvList = new ArrayList();
         try (InputStream inputStream = new FileInputStream(inputFilePath);
              FileOutputStream outputStream = new FileOutputStream(outputFilePath)) {
             //使用 utf-8 读取 csv
-            CsvReader csvReader = new CsvReader(inputStream, Charset.forName("UTF-8"));
+            CsvReader csvReader = new CsvReader(inputStream, Charset.forName(outputCharSet));
             while (csvReader.readRecord()) {
                 //获取每行的值
                 csvList.add(csvReader.getValues());
@@ -49,14 +58,23 @@ public class CsvUtil {
     }
 
 
-    public final static void csv2xlsx(String inputFilePath, String outputFilePath) throws IOException {
+    public final static void csv2xlsx(String inputFilePath, String outputFilePath,int charSet) throws IOException {
+        String outputCharSet =" ";
+        switch (charSet){
+            case 1:
+                outputCharSet = "GBK";
+                break;
+            case 0:
+                outputCharSet = "utf-8";
+                break;
+        }
         XSSFWorkbook xb = new XSSFWorkbook();
         XSSFSheet sheet = xb.createSheet("Sheet1");
         List<String[]> csvList = new ArrayList();
         try (InputStream inputStream = new FileInputStream(inputFilePath);
              FileOutputStream outputStream = new FileOutputStream(outputFilePath)) {
             //使用 utf-8 读取 csv
-            CsvReader csvReader = new CsvReader(inputStream, Charset.forName("UTF-8"));
+            CsvReader csvReader = new CsvReader(inputStream, Charset.forName(outputCharSet));
             while (csvReader.readRecord()) {
                 //获取每行的值
                 csvList.add(csvReader.getValues());

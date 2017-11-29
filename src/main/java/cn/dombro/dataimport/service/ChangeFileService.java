@@ -38,7 +38,7 @@ public class ChangeFileService implements IChangeFileService {
             //设置文件下载路径
             setExportFilePath(uploadFilePath,".xls");
             try {
-                CsvUtil.csv2xls(uploadFilePath,exportFilePath);
+                CsvUtil.csv2xls(uploadFilePath,exportFilePath,1);
                 msg = MsgEnum.CHANGE_FILE_SUCCESS.getMsg();
                 return true;
             } catch (IOException e) {
@@ -61,7 +61,7 @@ public class ChangeFileService implements IChangeFileService {
         if (file.exists() && suffix.equals(".csv")){
             setExportFilePath(uploadFilePath,".xlsx");
             try {
-                CsvUtil.csv2xlsx(uploadFilePath,exportFilePath);
+                CsvUtil.csv2xlsx(uploadFilePath,exportFilePath,1);
                 msg = MsgEnum.CHANGE_FILE_SUCCESS.getMsg();
                 return true;
             } catch (IOException e) {

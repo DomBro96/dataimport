@@ -89,14 +89,15 @@ public class ExcelUtil {
     public static void xls2Xlsx(String inputFilePath,String tempFilePath,String outputFilePath) throws Exception {
         XLS2CSV xls2CSV = new XLS2CSV(inputFilePath,tempFilePath,0);
         xls2CSV.process();
-        CsvUtil.csv2xlsx(tempFilePath,outputFilePath);
+        CsvUtil.csv2xlsx(tempFilePath,outputFilePath,0);
     }
 
     public static void xlsx2Xls(String inputFilePath,String tempFilePath,String outputFilePath) throws Exception {
         XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,tempFilePath,0);
         xlsx2CSV.process();
-        CsvUtil.csv2xls(tempFilePath,outputFilePath);
+        CsvUtil.csv2xls(tempFilePath,outputFilePath,0);
     }
+
 
 
 
