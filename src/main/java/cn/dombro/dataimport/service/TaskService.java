@@ -72,7 +72,7 @@ class DeleteTask extends Task{
             return;
         }else {
             File[] childrenFiles = dir.listFiles();
-            if (childrenFiles.length == 0) {
+            if (childrenFiles.length != 0) {
                 for (int i = 0; i < childrenFiles.length; i++) {
                     if (childrenFiles[i].isFile()) {
                         FilePathEnum.DELETE_FILE.deleteFile(childrenFiles[i].getAbsolutePath());
