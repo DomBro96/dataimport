@@ -96,9 +96,19 @@ public class MysqlDAOImp implements MysqlDAO{
     }
 
     //导出源文件通用
-    public void sqlExport(String tableName, String sqlFile) throws IOException {
-        String exportCmd = "mysqldump -u "+user+" -p"+password+" "+database+" "+tableName + " > "+sqlFile;
-        String exportShell =  "mysqldump -u "+user+" -S "+sockFile+" "+database+" "+tableName + " > "+sqlFile;
+    public void sqlExport(String tableName, String sqlFile,int mode) throws IOException {
+        String exportCmd = "";
+        String exportShell = "";
+        switch (mode){
+            case 0 :
+                exportCmd = "mysqldump -u "+user+" -p"+password+" "+database+" "+tableName + " > "+sqlFile;
+                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" "+database+" "+tableName + " > "+sqlFile;
+                break;
+            case 1 :
+                exportCmd = "mysqldump -u "+user+" -p"+password+" -t "+database+" "+tableName + " > "+sqlFile;
+                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" -t "+database+" "+tableName + " > "+sqlFile;
+                break;
+        }
         if (osName.startsWith("Windows")){
             CmdUtil.windowsCmd(exportCmd);
         }else {
@@ -106,7 +116,6 @@ public class MysqlDAOImp implements MysqlDAO{
         }
         LOGGER.info("从"+tableName+"表中导出 .sql 文件");
     }
-
 
     //导出源文件Linux
 //    public void sqlExportOnLinux(String tableName,String sockFile,String sqlFile){

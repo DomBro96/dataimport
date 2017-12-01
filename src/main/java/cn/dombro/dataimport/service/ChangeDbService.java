@@ -128,7 +128,7 @@ public class ChangeDbService implements IChangeDbService{
                 //csv 导入 mysql
                 mysqlDAO.csvImportByLf(csvFilePath,tableName);
                 //mysql导出 .sql 文件
-                mysqlDAO.sqlExport(tableName,sqlFilePath);
+                mysqlDAO.sqlExport(tableName,sqlFilePath,0);
                 mongodbDAO.dropCollection(tableName);
                 mysqlDAO.dropTable(tableName);
                 msg = MsgEnum.MONGODB_TO_MYSQL_SUCCESS.getMsg();

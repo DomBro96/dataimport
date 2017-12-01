@@ -83,6 +83,7 @@ public class SystemFunctionController extends Controller {
         int brand = getParaToInt("brand");
         //获取表名
         String tableName = getPara("table");
+        int sqlMode = getParaToInt("sqlmode");
         //获取列名
         String[] fields = getParaValues("fields");
         List fieldList = Arrays.asList(fields);
@@ -90,7 +91,7 @@ public class SystemFunctionController extends Controller {
         String fileMark = getPara("filemark");
         switch (brand){
             case 0 :
-                if (importDbService.importMysql(tableName,fieldList,fileMark))
+                if (importDbService.importMysql(tableName,fieldList,fileMark,sqlMode))
                     code = "I000";
                  break;
             case 1 :

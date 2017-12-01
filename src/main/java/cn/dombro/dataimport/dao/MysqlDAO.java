@@ -14,7 +14,7 @@ public interface MysqlDAO {
 
     void dropTable(String tableName);
 
-    void sqlExport(String tableName, String sqlFile) throws IOException;
+    void sqlExport(String tableName, String sqlFile,int mode) throws IOException;
 
     //void sqlExportOnLinux(String tableNam ,String sockFile,String sqlFile);
 

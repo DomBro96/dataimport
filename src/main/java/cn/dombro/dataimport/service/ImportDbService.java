@@ -73,7 +73,7 @@ public class ImportDbService implements IImportDbService{
      * @param fields    列名列表
      * @param fileName  更改后文件名
      */
-    public boolean importMysql(String tableName, List<String> fields, String fileName)  {
+    public boolean importMysql(String tableName, List<String> fields, String fileName,int sqlMode)  {
         //调用工厂中单例方法
         daoFactory = DAOImpFactory.getDaoImpFactory();
         mysqlDAO = daoFactory.getMySqlDAO();
@@ -86,7 +86,7 @@ public class ImportDbService implements IImportDbService{
                 //导入 .csv
                 mysqlDAO.csvImport(csvFilePath,tableName);
                 //导出 .sql
-                mysqlDAO.sqlExport(tableName,exportFilePath);
+                mysqlDAO.sqlExport(tableName,exportFilePath,sqlMode);
                 //删除表
                 mysqlDAO.dropTable(tableName);
                 msg = MsgEnum.IMPORT_MYSQL_SUCCESS.getMsg();
