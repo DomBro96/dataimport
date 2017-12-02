@@ -90,11 +90,14 @@ public class SystemFunctionController extends Controller {
         String fileMark = getPara("filemark");
         switch (brand){
             case 0 :
-                int sqlMode = getParaToInt("sqlmode");
-                if (importDbService.importMysql(tableName,fieldList,fileMark,sqlMode))
+                if (importDbService.importMysql(tableName,fieldList,fileMark,0))
                     code = "I000";
                  break;
-            case 1 :
+            case 1:
+                if (importDbService.importMysql(tableName,fieldList,fileMark,1))
+                    code = "I000";
+                break;
+            case 2 :
                 if (importDbService.importMongodb(tableName,fieldList,fileMark))
                     code = "I000";
                 break;
