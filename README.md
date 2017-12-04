@@ -27,7 +27,10 @@
   - [9.2 sql文件导入无限制bug](#9.2)
   - [9.3 调度器删除文件bug](#9.3)
   - [9.4 csv 文件的乱码bug](#9.4)
-
+  - [9.5 正项导入数据库去掉首行](#9.5)   
+  - [9.6 导出sql文件不包含表结构、显示导出字段](#9.6)
+  
+  
 <h2 id="1">1. 写在前面</h2>
 
 
@@ -392,9 +395,22 @@ database=data_import
 项目用到 csv 文件的地方特别多。这就要考虑到使用场景，我使Excel文件转换的csv文件为 GBK 编码，这样保证使 Excel 打开不会乱码。但数据库文件转为csv文件不可避免的会是 utf-8 编码。
 
 
+<h3 id="9.5">9.5 正项导入数据库去掉首行</h3>
+
+- 解决
+
+将Excel文件，csv文件数据导入数据库时一开始我将首行(也就是每列的名字)都导入数据库，为了避免潜在的bug，只好在获取首行内容之后将首行删除掉！这里的删除实际上是个假象，Excel-POI给了移除一行的api,
+但实际上底层还是原始的，将不删除的那其他行读入一个暂存中(可以是List等等)，读完后将该暂存中的内容从头写入原文件。[戳这里看源码120行](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/util/CsvUtil.java)
 
  
 
+<h3 id="9.6">9.6 导出sql文件不包含表结构、显示导出字段</h3>
+
+
+- 解决
+
+使用 mysqldump 工具导出仅含数据的sql文件只需要加上 -t 选项。
+使用 mysqldump 工具导出含有导出字段的sql文件只需要加上 -c 选项。[戳这里看源码99行](https://github.com/DomBro96/dataimport/blob/master/src/main/java/cn/dombro/dataimport/dao/MysqlDAOImp.java)
 
 
 
