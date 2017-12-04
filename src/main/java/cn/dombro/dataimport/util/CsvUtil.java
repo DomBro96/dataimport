@@ -21,7 +21,7 @@ public class CsvUtil {
 
 
     public final static void csv2xls(String inputFilePath, String outputFilePath,int charSet) throws IOException {
-        String outputCharSet =" ";
+        String outputCharSet = "utf-8";
         switch (charSet){
             case 0:
                 outputCharSet = "utf-8";
@@ -59,7 +59,7 @@ public class CsvUtil {
 
 
     public final static void csv2xlsx(String inputFilePath, String outputFilePath,int charSet) throws IOException {
-        String outputCharSet =" ";
+        String outputCharSet ="utf-8";
         switch (charSet){
             case 1:
                 outputCharSet = "GBK";
@@ -101,16 +101,47 @@ public class CsvUtil {
     public static List<String> getHeader(String filePath) throws IOException {
         File csvFile = new File(filePath);
         List<String[]> csvList = new ArrayList();
-        InputStream inputStream = new FileInputStream(csvFile);
-        CsvReader csvReader = new CsvReader(inputStream,Charset.forName("UTF-8"));
 
-        //逐行读取
-        while (csvReader.readRecord()){
+        try(InputStream inputStream = new FileInputStream(csvFile)){
+            CsvReader csvReader = new CsvReader(inputStream,Charset.forName("UTF-8"));
+            //逐行读取
+            while (csvReader.readRecord() ){
                 csvList.add(csvReader.getValues());
             }
-        csvReader.close();
+
+        //读取后删除首行
+        deleteRow(filePath,1);
+         csvReader.close();
+         }
         return Arrays.asList(csvList.get(0));
     }
 
 
+    public static void deleteRow(String filePath,int line) throws IOException {
+        BufferedReader reader = null;
+        BufferedWriter writer = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            System.out.println(11111);
+            String str;
+            List list = new ArrayList();
+            int rowNum = 0;
+
+            while((str=reader.readLine()) != null){
+                ++rowNum;
+                if( rowNum == line )
+                    continue;
+                list.add(str);
+            }
+            writer = new BufferedWriter(new FileWriter(filePath));
+            System.out.println(list);
+            for (int i = 0;i < list.size(); i++){
+                writer.write(list.get(i).toString());
+                writer.newLine();
+            }
+        }finally {
+            writer.close();
+            reader.close();
+        }
+    }
     }

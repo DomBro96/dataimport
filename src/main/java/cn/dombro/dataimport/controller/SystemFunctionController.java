@@ -165,7 +165,12 @@ public class SystemFunctionController extends Controller {
                 break;
             case 1:
                 List fieldList = Arrays.asList(getParaValues("fields"));
-                if (changeDbService.mongodbToMysql(reNamePath,tableName,fieldList))
+                if (changeDbService.mongodbToMysql(reNamePath,tableName,fieldList,0));
+                    code = "C000";
+                break;
+            case 2:
+                List fieldList1 = Arrays.asList(getParaValues("fields"));
+                if (changeDbService.mongodbToMysql(reNamePath,tableName,fieldList1,1));
                     code = "C000";
                 break;
         }

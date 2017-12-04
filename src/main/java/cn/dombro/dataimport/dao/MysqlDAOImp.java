@@ -101,12 +101,12 @@ public class MysqlDAOImp implements MysqlDAO{
         String exportShell = "";
         switch (mode){
             case 0 :
-                exportCmd = "mysqldump -u "+user+" -p"+password+" "+database+" "+tableName + " > "+sqlFile;
-                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" "+database+" "+tableName + " > "+sqlFile;
+                exportCmd = "mysqldump -u "+user+" -p"+password+" "+database+" "+tableName + " -c > "+sqlFile;
+                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" "+database+" "+tableName + " -c > "+sqlFile;
                 break;
             case 1 :
-                exportCmd = "mysqldump -u "+user+" -p"+password+" -t "+database+" "+tableName + " > "+sqlFile;
-                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" -t "+database+" "+tableName + " > "+sqlFile;
+                exportCmd = "mysqldump -u "+user+" -p"+password+" -t "+database+" "+tableName + " -c > "+sqlFile;
+                exportShell =  "mysqldump -u "+user+" -S "+sockFile+" -t "+database+" "+tableName + " -c > "+sqlFile;
                 break;
         }
         if (osName.startsWith("Windows")){

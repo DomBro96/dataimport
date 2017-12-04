@@ -105,7 +105,7 @@ public class ChangeDbService implements IChangeDbService{
 
 
 
-    public boolean mongodbToMysql(String dbFilePath,String tableName,List<String> fields){
+    public boolean mongodbToMysql(String dbFilePath,String tableName,List<String> fields,int sqlMode){
         daoFactory = DAOImpFactory.getDaoImpFactory();
         mysqlDAO = daoFactory.getMySqlDAO();
         mongodbDAO = daoFactory.getMongodbDAO();
@@ -128,7 +128,7 @@ public class ChangeDbService implements IChangeDbService{
                 //csv 导入 mysql
                 mysqlDAO.csvImportByLf(csvFilePath,tableName);
                 //mysql导出 .sql 文件
-                mysqlDAO.sqlExport(tableName,sqlFilePath,0);
+                mysqlDAO.sqlExport(tableName,sqlFilePath,sqlMode);
                 mongodbDAO.dropCollection(tableName);
                 mysqlDAO.dropTable(tableName);
                 msg = MsgEnum.MONGODB_TO_MYSQL_SUCCESS.getMsg();

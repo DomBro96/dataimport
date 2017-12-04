@@ -8,9 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +21,8 @@ public class ExcelUtil {
 
     public static List<String> getXlsHeader(String filePath) throws IOException {
 
-        InputStream inputStream = new FileInputStream(filePath);
-        try {
+        OutputStream outputStream = null;
+        try(InputStream inputStream = new FileInputStream(filePath)){
             HSSFWorkbook hssfworkbook = new HSSFWorkbook(inputStream);
             HSSFSheet sheet = hssfworkbook.getSheetAt(0);
             HSSFRow firstRow = sheet.getRow(0);
@@ -36,8 +34,11 @@ public class ExcelUtil {
                 String cell = getCellValue(firstRow.getCell(i));
                 cellOnRowFist.add(cell);
             }
+            outputStream = new FileOutputStream(filePath);
+            sheet.shiftRows(1,sheet.getLastRowNum(),-1);
+            hssfworkbook.write(outputStream);
         }finally {
-            inputStream.close();
+            outputStream.close();
         }
 
         return cellOnRowFist;
@@ -45,8 +46,8 @@ public class ExcelUtil {
 
     public static List<String> getXlsxHeader(String filePath) throws IOException {
 
-        InputStream inputStream = new FileInputStream(filePath);
-        try {
+        OutputStream outputStream = null;
+        try(InputStream inputStream = new FileInputStream(filePath)){
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
             XSSFRow firstRow = sheet.getRow(0);
@@ -58,8 +59,11 @@ public class ExcelUtil {
                 String cell = getCellValue(firstRow.getCell(i));
                 cellOnRowFist.add(cell);
             }
+            outputStream = new FileOutputStream(filePath);
+            sheet.shiftRows(1,sheet.getLastRowNum(),-1);
+            xssfWorkbook.write(outputStream);
         }finally {
-            inputStream.close();
+            outputStream.close();
         }
         return cellOnRowFist;
     }
@@ -116,4 +120,7 @@ public class ExcelUtil {
             return value;
         }
     }
+
+
+
 }
