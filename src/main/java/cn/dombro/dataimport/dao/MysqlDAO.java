@@ -25,4 +25,6 @@ public interface MysqlDAO {
     void sqlImport(String sqlFilePath) throws IOException;
 
     void csvImportByLf(String csvFilePath,String tableName) throws SQLException;
+
+    List getWarning();
 }

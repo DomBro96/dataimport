@@ -30,6 +30,13 @@ public class ImportDbService implements IImportDbService{
 
     private String msg = null;
 
+    private List warnList = null;
+
+    public List getWarnList() {
+
+        return warnList;
+    }
+
     public String getExportFilePath() {
         return exportFilePath;
     }
@@ -37,6 +44,8 @@ public class ImportDbService implements IImportDbService{
     public String getMsg() {
         return msg;
     }
+
+
 
 
     /**
@@ -85,6 +94,14 @@ public class ImportDbService implements IImportDbService{
                 excel2csv(fileName);
                 //导入 .csv
                 mysqlDAO.csvImport(csvFilePath,tableName);
+                //导入后查看又没有警告
+                if (mysqlDAO.getWarning().size() != 0){
+                    warnList = mysqlDAO.getWarning();
+                    //删除表
+                    mysqlDAO.dropTable(tableName);
+                    msg = MsgEnum.IMPORT_MYSQL_FAIL.getMsg();
+                    return false;
+                }
                 //导出 .sql
                 mysqlDAO.sqlExport(tableName,exportFilePath,sqlMode);
                 //删除表

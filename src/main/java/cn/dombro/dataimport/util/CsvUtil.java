@@ -122,7 +122,6 @@ public class CsvUtil {
         BufferedWriter writer = null;
         try {
             reader = new BufferedReader(new FileReader(filePath));
-            System.out.println(11111);
             String str;
             List list = new ArrayList();
             int rowNum = 0;

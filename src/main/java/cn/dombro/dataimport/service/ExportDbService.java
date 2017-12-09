@@ -88,26 +88,36 @@ public class ExportDbService implements IExportDbService{
         }
     }
 
-    public boolean exportFromMongodb(String uploadFilePath,String collectionName,List<String> fields,String exportFormat){
+    //从JSON文件中获取导出字段
+    public boolean exportFromMongodb(String uploadFilePath,String collectionName,String exportFormat,int mode){
          daoFactory = DAOImpFactory.getDaoImpFactory();
          mongodbDAO = daoFactory.getMongodbDAO();
          mongodbDAO = new MongodbDAOImp();
-         //判断集合是否存在
+
+        //判断集合是否存在
          if (!mongodbDAO.isCollectionExist(collectionName) && GeneratorUtil.isEngNum(collectionName)){
              //建集合
              mongodbDAO.createCollection(collectionName);
              setCsvFilePath(uploadFilePath,exportFormat);
              try {
-                 //导入.json 文件
-                 mongodbDAO.jsonImport(collectionName,uploadFilePath);
-                 //导出.csv
-                 mongodbDAO.csvExport(fields,collectionName,csvFilePath);
-                 //转换 excel
-                 csv2excel(exportFormat);
-                 //删除集合
-                 mongodbDAO.dropCollection(collectionName);
-                 msg = MsgEnum.EXPORT_MONGODB_SUCCESS.getMsg();
-                 return true;
+                 List<String> fields = mongodbDAO.getFields(uploadFilePath,mode);
+                 if (fields != null && fields.size() != 0) {
+                     //导入.json 文件
+                     mongodbDAO.jsonImport(collectionName, uploadFilePath);
+                     //导出.csv
+                     mongodbDAO.csvExport(fields, collectionName, csvFilePath);
+                     //转换 excel
+                     csv2excel(exportFormat);
+                     //删除集合
+                     mongodbDAO.dropCollection(collectionName);
+                     msg = MsgEnum.EXPORT_MONGODB_SUCCESS.getMsg();
+                     return true;
+                 }else {
+                     mongodbDAO.dropCollection(collectionName);
+                     LOGGER.info("MongoDB导出数据库失败");
+                     msg = MsgEnum.EXPORT_MONGODB_FAIL.getMsg();
+                     return false;
+                 }
              } catch (Exception e) {
                  System.out.println(csvFilePath);
                  //删除该集合
