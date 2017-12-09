@@ -180,5 +180,25 @@ public class MysqlDAOImp implements MysqlDAO{
         return warnings;
     }
 
+    @Override
+    public void createSimpleTable(String tableName, List<String> fields) {
+        String sql = "CREATE TABLE "+tableName
+                +"( ";
+        if (fields != null && fields.size() > 0){
+            for (int i = 0;i < fields.size();i++){
+                sql += fields.get(i).trim() + " varchar(50)";
+                //拼接逗号
+                if (i < fields.size() - 1){
+                    sql += ",";
+                }
+            }
+        }
+        //设置默认字符集
+        sql += ");";
+        System.out.println(sql);
+        Db.update(sql);
+        LOGGER.info("在 MySql 数据库中新建 "+tableName+" 表");
+    }
+
 
 }

@@ -27,4 +27,6 @@ public interface MysqlDAO {
     void csvImportByLf(String csvFilePath,String tableName) throws SQLException;
 
     List getWarning();
+
+    void createSimpleTable(String tableName, List<String> fields);
 }

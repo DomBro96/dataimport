@@ -126,7 +126,7 @@ public class ChangeDbService implements IChangeDbService{
                     //导出 csv
                     mongodbDAO.csvExport(fields, tableName, csvFilePath);
                     //MySql 建表
-                    mysqlDAO.createTable(tableName,fields);
+                    mysqlDAO.createSimpleTable(tableName,fields);
                     //csv 导入 mysql
                     mysqlDAO.csvImportByLf(csvFilePath, tableName);
                     //mysql导出 .sql 文件
