@@ -1,6 +1,7 @@
 package cn.dombro.dataimport.test;
 
 
+import cn.dombro.dataimport.service.ExportDbService;
 import cn.dombro.dataimport.util.*;
 
 import it.sauronsoftware.cron4j.*;
@@ -44,13 +45,11 @@ public class UtilTest {
 
     @Test
      public void  csvTest() throws Exception {
+//        ExcelUtil.getXlsxHeader("D:\\文档\\数据快速导入\\书单-1.xlsx");
+//        ExcelUtil.xlsx2Csv("D:\\文档\\数据快速导入\\书单-1.xlsx","D:\\文档\\数据快速导入\\dotest12.csv");
 
-        String testString = "name,varchar,20,pk";
-        String[] testArray = testString.split(",");
-        System.out.println(testArray.length);
-        for (String test:testArray){
-             System.out.println(test);
-        }
+           CsvUtil.deleteRow("D:\\文档\\数据快速导入\\dotest12.csv",1);
+
     }
 
     @Test
