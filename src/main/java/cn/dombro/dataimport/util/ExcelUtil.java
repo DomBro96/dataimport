@@ -46,7 +46,7 @@ public class ExcelUtil {
 
     public static List<String> getXlsxHeader(String filePath) throws IOException {
 
-        OutputStream outputStream = null;
+
         try(InputStream inputStream = new FileInputStream(filePath)){
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
@@ -59,11 +59,6 @@ public class ExcelUtil {
                 String cell = getCellValue(firstRow.getCell(i));
                 cellOnRowFist.add(cell);
             }
-            outputStream = new FileOutputStream(filePath);
-            sheet.shiftRows(1,sheet.getLastRowNum(),-1);
-            xssfWorkbook.write(outputStream);
-        }finally {
-            outputStream.close();
         }
         return cellOnRowFist;
     }
@@ -71,6 +66,7 @@ public class ExcelUtil {
     public static void xlsx2Csv(String inputFilePath,String outputFilePath) throws Exception {
         XLSX2CSV xlsx2CSV = new XLSX2CSV(inputFilePath,outputFilePath,0);
         xlsx2CSV.process();
+        CsvUtil.deleteRow(outputFilePath,1);
     }
 
     public static void xls2Csv(String inputFilePath,String outputFilePath) throws Exception {

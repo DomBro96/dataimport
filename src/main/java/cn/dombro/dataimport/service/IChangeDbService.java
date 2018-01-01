@@ -7,6 +7,6 @@ public interface IChangeDbService {
     String getMsg();
     String getExportFilePath();
     boolean mysqlToMongodb(String dbFilePath,String tableName);
-    boolean mongodbToMysql(String dbFilePath,String tableName,List<String> fields,int sqlMode);
+    boolean mongodbToMysql(String dbFilePath,String tableName,int sqlMode);
 
 }

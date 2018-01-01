@@ -16,8 +16,6 @@ public interface MysqlDAO {
 
     void sqlExport(String tableName, String sqlFile,int mode) throws IOException;
 
-    //void sqlExportOnLinux(String tableNam ,String sockFile,String sqlFile);
-
     boolean isTableExist(String tableName);
 
     List<String> getFields(String tableName);
@@ -25,4 +23,8 @@ public interface MysqlDAO {
     void sqlImport(String sqlFilePath) throws IOException;
 
     void csvImportByLf(String csvFilePath,String tableName) throws SQLException;
+
+    List getWarning();
+
+    void createSimpleTable(String tableName, List<String> fields);
 }

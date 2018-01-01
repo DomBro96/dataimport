@@ -14,7 +14,7 @@ public enum MsgEnum {
     EXPORT_MONGODB_SUCCESS("MongoDB数据库文件导出指定格式成功"),
     EXPORT_MYSQL_FAIL("MySql数据库导出指定格式失败，.sql文件和表名不能为中文，并且请检查您的原文件是否为表结构的sql文件"),
     EXPORT_MYSQL_WITHWRONGTABLE("MySql数据库导出失败，sql文件中并无您输入的表，请确保您的sql文件为utf-8编码"),
-    EXPORT_MONGODB_FAIL("MongoDB数据库导出指定格式失败，请检查您的原文件是否为集合导出的json文件"),
+    EXPORT_MONGODB_FAIL("MongoDB数据库导出指定格式失败，请检查您的原文件是否为集合导出的json文件,与json文件格式"),
     MYSQL_TO_MONGODB_SUCCESS("MySql数据库转换MongoDB成功"),
     MONGODB_TO_MYSQL_SUCCESS("MongoDB数据库转换MySql成功"),
     MYSQL_TO_MONGODB_FAIL("MySql数据库转换MongoDB失败，.sql文件和表名不能为中文，请检查您的原文件是否为表结构的sql文件"),

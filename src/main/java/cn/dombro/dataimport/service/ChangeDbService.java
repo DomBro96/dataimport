@@ -105,7 +105,7 @@ public class ChangeDbService implements IChangeDbService{
 
 
 
-    public boolean mongodbToMysql(String dbFilePath,String tableName,List<String> fields,int sqlMode){
+    public boolean mongodbToMysql(String dbFilePath,String tableName,int sqlMode){
         daoFactory = DAOImpFactory.getDaoImpFactory();
         mysqlDAO = daoFactory.getMySqlDAO();
         mongodbDAO = daoFactory.getMongodbDAO();
@@ -118,21 +118,29 @@ public class ChangeDbService implements IChangeDbService{
             //设置文件路径
             setFilePath(dbFilePath);
             try {
-                //导入 json
-                mongodbDAO.jsonImport(tableName,dbFilePath);
-                exportFilePath = sqlFilePath;
-                //导出 csv
-                mongodbDAO.csvExport(fields,tableName,csvFilePath);
-                //MySql 建表
-                mysqlDAO.createTable(tableName,fields);
-                //csv 导入 mysql
-                mysqlDAO.csvImportByLf(csvFilePath,tableName);
-                //mysql导出 .sql 文件
-                mysqlDAO.sqlExport(tableName,sqlFilePath,sqlMode);
-                mongodbDAO.dropCollection(tableName);
-                mysqlDAO.dropTable(tableName);
-                msg = MsgEnum.MONGODB_TO_MYSQL_SUCCESS.getMsg();
-                return true;
+                fields = mongodbDAO.getFields(dbFilePath,1);
+                if (fields != null && fields.size() != 0) {
+                    //导入 json
+                    mongodbDAO.jsonImport(tableName, dbFilePath);
+                    exportFilePath = sqlFilePath;
+                    //导出 csv
+                    mongodbDAO.csvExport(fields, tableName, csvFilePath);
+                    //MySql 建表
+                    mysqlDAO.createSimpleTable(tableName,fields);
+                    //csv 导入 mysql
+                    mysqlDAO.csvImportByLf(csvFilePath, tableName);
+                    //mysql导出 .sql 文件
+                    mysqlDAO.sqlExport(tableName, sqlFilePath, sqlMode);
+                    mongodbDAO.dropCollection(tableName);
+                    mysqlDAO.dropTable(tableName);
+                    msg = MsgEnum.MONGODB_TO_MYSQL_SUCCESS.getMsg();
+                    return true;
+                }else {
+                    mongodbDAO.dropCollection(tableName);
+                    LOGGER.info("MongoDB数据库导入MySql数据库失败");
+                    msg = MsgEnum.MONGODB_TO_MYSQL_FAIL.getMsg();
+                    return false;
+                }
             } catch (Exception e) {
                LOGGER.error("MongoDB数据库导入MySql数据库失败",e);
                msg = MsgEnum.MONGODB_TO_MYSQL_FAIL.getMsg();

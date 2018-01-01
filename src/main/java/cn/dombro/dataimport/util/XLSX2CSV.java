@@ -327,7 +327,7 @@ public class XLSX2CSV {
                 OUTPUT_CHARSET = "GBK";
                 break;
         }
-        output = new PrintStream(outputFilePath, OUTPUT_CHARSET);
+        output = new PrintStream(outputFilePath,OUTPUT_CHARSET);
         minColumns = -1;
     }
 
@@ -370,7 +370,7 @@ public class XLSX2CSV {
         StylesTable styles = xssfReader.getStylesTable();
         XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader
                 .getSheetsData();
-        int index = 0;
+        //int index = 0;
         while (iter.hasNext()) {
             InputStream stream = iter.next();
             //String sheetName = iter.getSheetName();
@@ -378,7 +378,7 @@ public class XLSX2CSV {
             //this.output.println(sheetName + " [index=" + index + "]:");
             processSheet(styles, strings, stream);
             stream.close();
-            ++index;
+           // ++index;
         }
         close();
     }

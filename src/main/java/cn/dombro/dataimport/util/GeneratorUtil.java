@@ -55,8 +55,8 @@ public class GeneratorUtil {
         if(temp>=100000){
             temp = 99999;
         }
-        int tempint = (int)Math.ceil(temp);
-        return tempint;
+        int tempInt = (int)Math.ceil(temp);
+        return tempInt;
     }
 
     public static boolean isEngNum(String str){

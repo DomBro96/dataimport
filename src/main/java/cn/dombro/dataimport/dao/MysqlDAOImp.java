@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MysqlDAOImp implements MysqlDAO{
@@ -28,17 +30,40 @@ public class MysqlDAOImp implements MysqlDAO{
     public void createTable(String tableName, List<String> fields){
         String sql = "CREATE TABLE "+tableName
                 +"( ";
+        List<String> pkList = new ArrayList<>();
         if (fields != null && fields.size() > 0){
             for (int i = 0;i < fields.size();i++){
-                sql += fields.get(i).trim() + " varchar(50)";
+                String[] mappingArray = fields.get(i).split(",");
+                if(mappingArray[1].equals("varchar") || mappingArray[1].equals("char") || mappingArray[1].equals("varbinary")){
+                    sql += mappingArray[0] + " " +mappingArray[1]+"("+mappingArray[2]+")";
+                }else {
+                    sql += mappingArray[0] + " " +mappingArray[1];
+                }
+
+                if ((mappingArray.length == 4 && mappingArray[3].equals("pk")) || (mappingArray.length == 3 && mappingArray[2].equals("pk"))){
+                    pkList.add(mappingArray[0]);
+                }
                 //拼接逗号
                 if (i < fields.size() - 1){
                     sql += ",";
                 }
             }
         }
-        //设置默认字符集
-        sql += ");";
+
+        //判断字段中是否有主键
+        if (pkList.size() != 0) {
+            sql += " ,PRIMARY KEY (";
+            for (int j = 0; j < pkList.size(); j++) {
+                sql += pkList.get(j);
+                if (pkList.size() != 1 && j < pkList.size() - 1) {
+                    sql += ",";
+                }
+                if (j == pkList.size()-1){
+                    sql += ")";
+                }
+            }
+        }
+        sql += " );";
         System.out.println(sql);
         Db.update(sql);
         LOGGER.info("在 MySql 数据库中新建 "+tableName+" 表");
@@ -51,7 +76,7 @@ public class MysqlDAOImp implements MysqlDAO{
         }
         String line = System.lineSeparator();
         System.out.println(line);
-        String sql = "load data local infile '"+csvFilePath+"' into table "+tableName+" character set utf8 fields terminated by ',' " +
+        String sql = "load data local infile '"+csvFilePath+"' ignore into table "+tableName+" character set utf8 fields terminated by ',' " +
                 "optionally enclosed by '\"' lines terminated by '"+line+"'";
         System.out.println(sql);
         Db.update(sql);
@@ -117,12 +142,7 @@ public class MysqlDAOImp implements MysqlDAO{
         LOGGER.info("从"+tableName+"表中导出 .sql 文件");
     }
 
-    //导出源文件Linux
-//    public void sqlExportOnLinux(String tableName,String sockFile,String sqlFile){
-//        String exportShell =  "mysqldump -u root -S "+sockFile+" "+database+" "+tableName + " > "+sqlFile;
-//        CmdUtil.linuxCmd(exportShell);
-//        LOGGER.info("从"+tableName+"表中导出 .sql 文件");
-//    }
+
 
     //判断表是否存在
     public boolean isTableExist(String tableName){
@@ -157,6 +177,33 @@ public class MysqlDAOImp implements MysqlDAO{
     }
 
 
+    //获取警告
+    public List getWarning(){
+        String sql = "SHOW WARNINGS";
+        List<Record> warnings = Db.find(sql);
+        System.out.println(warnings);
+        return warnings;
+    }
+
+    @Override
+    public void createSimpleTable(String tableName, List<String> fields) {
+        String sql = "CREATE TABLE "+tableName
+                +"( ";
+        if (fields != null && fields.size() > 0){
+            for (int i = 0;i < fields.size();i++){
+                sql += fields.get(i).trim() + " varchar(50)";
+                //拼接逗号
+                if (i < fields.size() - 1){
+                    sql += ",";
+                }
+            }
+        }
+        //设置默认字符集
+        sql += ");";
+        System.out.println(sql);
+        Db.update(sql);
+        LOGGER.info("在 MySql 数据库中新建 "+tableName+" 表");
+    }
 
 
 }

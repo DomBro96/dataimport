@@ -16,7 +16,8 @@ public class MyConfig extends JFinalConfig {
     public void configConstant(Constants constants) {
       PropKit.use("config.properties");
       //文件上传路径
-      constants.setBaseUploadPath(FilePathEnum.UPLOAD_PATH.getFilePath());
+        constants.setBaseUploadPath(FilePathEnum.UPLOAD_PATH.getFilePath());
+        constants.setMaxPostSize(20*1024*1024);
       constants.setDevMode(true);
 
     }

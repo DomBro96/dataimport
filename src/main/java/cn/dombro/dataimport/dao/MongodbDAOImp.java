@@ -8,9 +8,11 @@ import com.mongodb.client.MongoIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MongodbDAOImp implements MongodbDAO {
 
@@ -107,6 +109,32 @@ public class MongodbDAOImp implements MongodbDAO {
             CmdUtil.linuxCmd(exportCmd);
         }
         LOGGER.info("从"+collection+"表中导出 json 文件"+filePath);
+    }
+
+    @Override
+    public List<String> getFields(String filePath,int mode) throws IOException {
+
+        List<String> fields = new ArrayList<>();
+
+        try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+
+            String str = reader.readLine();
+            String pattern = "";
+            if (mode == 1){
+                pattern = "\"[a-zA-Z]*\":";
+            }else if (mode == 2){
+                pattern = "\"_?[a-zA-Z]*\":";
+            }
+
+            Pattern pat = Pattern.compile(pattern);
+            Matcher matcher = pat.matcher(str);
+            while (matcher.find()){
+                String filed =  matcher.group(0);
+                filed = filed.replaceAll("\"","").replaceAll(":","");
+                fields.add(filed);
+            }
+        }
+        return fields;
     }
 
 }

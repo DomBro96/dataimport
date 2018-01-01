@@ -75,6 +75,7 @@ public class SystemFunctionController extends Controller {
 
     @ActionKey("/sf/dataimoprt/doimport")
     public void doimport(){
+        List warningList = null;
         jsonMap = new HashMap<>();
         serviceFactory = ServiceFactory.getServiceFactory();
         importDbService = serviceFactory.getImportDbService();
@@ -105,6 +106,10 @@ public class SystemFunctionController extends Controller {
         msg = importDbService.getMsg();
         jsonMap.put("code",code);
         jsonMap.put("msg",msg);
+        warningList = importDbService.getWarnList();
+        if (warningList !=null && warningList.size() != 0){
+            jsonMap.put("warnings",warningList);
+        }
         if (code.equals("I000")){
             exportFilePath = importDbService.getExportFilePath();
             downLoadToken = getDownLoadToken(exportFilePath);
@@ -131,8 +136,11 @@ public class SystemFunctionController extends Controller {
                 break;
 
             case 1:
-                List fieldList = Arrays.asList(getParaValues("fields"));
-                if (exportDbService.exportFromMongodb(reNamePath,tableName,fieldList,format))
+                if (exportDbService.exportFromMongodb(reNamePath,tableName,format,1))
+                    code = "E000";
+                break;
+            case 2:
+                if (exportDbService.exportFromMongodb(reNamePath,tableName,format,2))
                     code = "E000";
                 break;
         }
@@ -164,13 +172,11 @@ public class SystemFunctionController extends Controller {
                     code = "C000";
                 break;
             case 1:
-                List fieldList = Arrays.asList(getParaValues("fields"));
-                if (changeDbService.mongodbToMysql(reNamePath,tableName,fieldList,0));
+                 if (changeDbService.mongodbToMysql(reNamePath,tableName,0));
                     code = "C000";
                 break;
             case 2:
-                List fieldList1 = Arrays.asList(getParaValues("fields"));
-                if (changeDbService.mongodbToMysql(reNamePath,tableName,fieldList1,1));
+                 if (changeDbService.mongodbToMysql(reNamePath,tableName,1));
                     code = "C000";
                 break;
         }

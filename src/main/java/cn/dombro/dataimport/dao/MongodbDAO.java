@@ -1,6 +1,7 @@
 package cn.dombro.dataimport.dao;
 
 //MongoDbDAO 接口
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,4 +21,5 @@ public interface MongodbDAO {
 
      void jsonExport(String collection,String filePath) throws IOException;
 
+     List<String> getFields(String filePath,int mode) throws IOException;
     }
