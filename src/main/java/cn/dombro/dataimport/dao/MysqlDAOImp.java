@@ -34,8 +34,13 @@ public class MysqlDAOImp implements MysqlDAO{
         if (fields != null && fields.size() > 0){
             for (int i = 0;i < fields.size();i++){
                 String[] mappingArray = fields.get(i).split(",");
-                sql += mappingArray[0] + " " +mappingArray[1]+"("+mappingArray[2]+")";
-                if (mappingArray.length == 4 && mappingArray[3].equals("pk")){
+                if(mappingArray[1].equals("varchar") || mappingArray[1].equals("char") || mappingArray[1].equals("varbinary")){
+                    sql += mappingArray[0] + " " +mappingArray[1]+"("+mappingArray[2]+")";
+                }else {
+                    sql += mappingArray[0] + " " +mappingArray[1];
+                }
+
+                if ((mappingArray.length == 4 && mappingArray[3].equals("pk")) || (mappingArray.length == 3 && mappingArray[2].equals("pk"))){
                     pkList.add(mappingArray[0]);
                 }
                 //拼接逗号

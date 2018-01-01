@@ -20,20 +20,24 @@ public class DaoTest {
 
     @Test
     public void mysqlDaoTest() throws Exception {
-//        PropKit.use("config.properties");
-//        DruidPlugin dp = new DruidPlugin(PropKit.get("jdbcUrl"),PropKit.get("user"),PropKit.get("password"));
-//        dp.setDriverClass(PropKit.get("driverClass"));
-//        dp.set(PropKit.getInt("initialSize"),PropKit.getInt("minIdle"),PropKit.getInt("maxActive"));
-//        dp.setMaxWait(PropKit.getInt("maxWait"));
-//        ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
-//        dp.start();
-//        arp.start();
-//        System.out.println(dp.start());
-//        System.out.println(arp.start());
-//        MysqlDAOImp daoImp = new MysqlDAOImp();
+        PropKit.use("config.properties");
+        DruidPlugin dp = new DruidPlugin(PropKit.get("jdbcUrl"),PropKit.get("user"),PropKit.get("password"));
+        dp.setDriverClass(PropKit.get("driverClass"));
+        dp.set(PropKit.getInt("initialSize"),PropKit.getInt("minIdle"),PropKit.getInt("maxActive"));
+        dp.setMaxWait(PropKit.getInt("maxWait"));
+        ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
+        dp.start();
+        arp.start();
+        System.out.println(dp.start());
+        System.out.println(arp.start());
+        MysqlDAOImp daoImp = new MysqlDAOImp();
 //        daoImp.csvImport("C:\\Users\\18246\\Desktop\\test\\students.csv","stu");
 //        daoImp.getWarning();
-        //daoImp.sqlImportNoCommand("D:\\文档\\数据快速导入\\students.sql");
+        List<String> list = new ArrayList<>();
+        list.add("number,int,pk");
+        list.add("name,varchar,10");
+        list.add("phone,varchar,13");
+        daoImp.createTable("students",list);
 
     }
 
