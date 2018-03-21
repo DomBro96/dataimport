@@ -3,11 +3,13 @@
 ### Example user template
 
 # IntelliJ project files
+.gitignore
 .idea
 *.iml
 workspace.xml
 config.properties
 mongodb.properties
 target
+README.md
 out
 gen
